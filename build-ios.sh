@@ -9,4 +9,6 @@ else
 	cmakeImpl "$1"
 fi
 
-open ./build-ios/*.xcodeproj 2>/dev/null
+if [ "$?" == 0 ] ; then
+	open ./build-ios/*.xcodeproj 2>/dev/null
+fi

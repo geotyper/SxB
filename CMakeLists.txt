@@ -49,6 +49,7 @@ add_subdirectory("example")
 add_subdirectory("3rdparty/bx/src")
 add_subdirectory("3rdparty/bimg/src")
 add_subdirectory("3rdparty/bgfx/src")
+add_subdirectory("3rdparty/SFML/src")
 
 if(SXB_TEST)
 	add_subdirectory("test")
