@@ -2,11 +2,7 @@
 .DS_Store
 *.swp
 
-build
-build-ios
-build-macos
-build-win
-build-android
+Solution
 bin
 lib
 pack

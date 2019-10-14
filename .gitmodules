@@ -22,3 +22,7 @@
 	path = BuildScript
 	url = https://github.com/guo122/BuildScript
 	shallow = true
+[submodule "3rd/ozz-animation"]
+	path = 3rd/ozz-animation
+	url = https://github.com/guo122/ozz-animation
+	shallow = true
