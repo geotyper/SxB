@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.0.2)
 
 project(SxB)
+set(THE_PROJECT_PREFIX "SxB")
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
@@ -8,8 +9,7 @@ set(VERSION_PATCH 1)
 
 set(CMAKE_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
-include(${CMAKE_ROOT_DIR}/BuildScript/cmake/Config.cmake)
-include(${CMAKE_ROOT_DIR}/BuildScript/cmake/Macros.cmake)
+include(${CMAKE_ROOT_DIR}/BuildScript/cmake/Build.cmake)
 
 # enable project folders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -43,13 +43,14 @@ if(SFML_OPENGL_ES)
 endif()
 #############
 
-add_subdirectory("src")
-add_subdirectory("example")
+#add_subdirectory("src")
+#add_subdirectory("example")
 
-add_subdirectory("3rdparty/bx/src")
-add_subdirectory("3rdparty/bimg/src")
-add_subdirectory("3rdparty/bgfx/src")
-add_subdirectory("3rdparty/SFML/src")
+add_subdirectory("3rd/bx")
+add_subdirectory("3rd/bimg")
+add_subdirectory("3rd/bgfx")
+add_subdirectory("3rd/SFML")
+add_subdirectory("3rd/ozz-animation")
 
 if(SXB_TEST)
 	add_subdirectory("test")
