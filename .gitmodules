@@ -2,3 +2,23 @@
 	path = tools/AppIcon
 	url = https://github.com/guo122/AppIcon.git
 	shallow = true
+[submodule "3rd/SFML"]
+	path = 3rd/SFML
+	url = https://github.com/guo122/SFML
+	shallow = true
+[submodule "3rd/bgfx"]
+	path = 3rd/bgfx
+	url = https://github.com/guo122/bgfx
+	shallow = true
+[submodule "3rd/bx"]
+	path = 3rd/bx
+	url = https://github.com/guo122/bx
+	shallow = true
+[submodule "3rd/bimg"]
+	path = 3rd/bimg
+	url = https://github.com/guo122/bimg
+	shallow = true
+[submodule "BuildScript"]
+	path = BuildScript
+	url = https://github.com/guo122/BuildScript
+	shallow = true
