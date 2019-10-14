@@ -1,18 +1,4 @@
 [submodule "tools/AppIcon"]
 	path = tools/AppIcon
 	url = https://github.com/guo122/AppIcon.git
-[submodule "BuildScript"]
-	path = BuildScript
-	url = https://github.com/guo122/BuildScript.git
-[submodule "3rdparty/bimg"]
-	path = 3rdparty/bimg
-	url = https://github.com/guo122/bimg.git
-[submodule "3rdparty/bx"]
-	path = 3rdparty/bx
-	url = https://github.com/guo122/bx.git
-[submodule "3rdparty/bgfx"]
-	path = 3rdparty/bgfx
-	url = https://github.com/guo122/bgfx.git
-[submodule "3rdparty/SFML"]
-	path = 3rdparty/SFML
-	url = https://github.com/guo122/SFML
+	shallow = true
