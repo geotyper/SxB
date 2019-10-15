@@ -7,6 +7,10 @@ bin
 lib
 pack
 
+ios.sh
+macos.sh
+windows.bat
+
 *.pdb
 *.exp
 *.ilk
