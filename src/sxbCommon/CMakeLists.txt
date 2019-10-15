@@ -39,17 +39,24 @@ set(ID_COMPRESS_SRCS
 			
 source_group("ib-compress" FILES ${ID_COMPRESS_SRCS})	
 		
-IF (${THE_PROJECT_PREFIX}_OS_WINDOWS)
-	set(INC_DIR ${CMAKE_ROOT_DIR}/include/bx/compat/msvc)
+IF (OS_IS_WINDOWS)
+	set(INC_DIR ${CMAKE_ROOT_DIR}/3rd/bx/include/bx/compat/msvc)
 	Add_Definitions(-D_HAS_ITERATOR_DEBUGGING=0)
-ELSEIF (${THE_PROJECT_PREFIX}_OS_MACOS)
-	set(INC_DIR ${CMAKE_ROOT_DIR}/include/bx/compat/osx)
+ELSEIF (OS_IS_MACOS)
+	set(INC_DIR ${CMAKE_ROOT_DIR}/3rd/bx/include/bx/compat/osx)
 ENDIF()
+
+set(INC_DIR ${INC_DIR}
+	${CMAKE_ROOT_DIR}/3rd/bx/include
+	${CMAKE_ROOT_DIR}/3rd/bgfx/include
+	${CMAKE_ROOT_DIR}/3rd/bimg/include
+)
 			
 include_directories(${INC_DIR})
 
-add_library_macro(
-				${PROJECT_NAME} 
-				FOLDER "libs" 
-				SOURCES ${DIR_SRCS} ${ID_COMPRESS_SRCS}
+add_lib(
+	${PROJECT_NAME} 
+	FOLDER "libs" 
+	SOURCES ${DIR_SRCS} 
+	#${ID_COMPRESS_SRCS}
 )

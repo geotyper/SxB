@@ -12,7 +12,7 @@ Add_Definitions(
 	-D_HAS_ITERATOR_DEBUGGING=0
 )
 
-add_executable_macro(
+add_exe(
 				${PROJECT_NAME} 
 				FOLDER "example" 
 				SOURCES ${DIR_SRCS}

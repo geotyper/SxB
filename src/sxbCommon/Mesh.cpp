@@ -1,4 +1,4 @@
-
+#if 0
 #include <bx/bx.h>
 #include <bx/file.h>
 #include <bx/sort.h>
@@ -285,3 +285,4 @@ void meshStateDestroy(MeshState* _meshState)
 }
 
 SXB_NAMESPACE_END
+#endif

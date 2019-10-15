@@ -6,4 +6,4 @@ set(SRC_INC_DIR
 
 include_directories(${SRC_INC_DIR})
 
-#add_subdirectory("sxbCommon")
+add_subdirectory("sxbCommon")

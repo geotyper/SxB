@@ -52,6 +52,9 @@ add_subdirectory("3rd/bgfx")
 #add_subdirectory("3rd/SFML")
 #add_subdirectory("3rd/ozz-animation")
 
+add_subdirectory("example")
+add_subdirectory("src")
+
 if(SXB_TEST)
 	add_subdirectory("test")
 endif()
