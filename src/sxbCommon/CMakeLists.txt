@@ -37,7 +37,7 @@ set(ID_COMPRESS_SRCS
 					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/writebitstream.h
 )
 			
-source_group("ib-compress" FILES ${ID_COMPRESS_SRCS})	
+#source_group("ib-compress" FILES ${ID_COMPRESS_SRCS})	
 		
 IF (OS_IS_WINDOWS)
 	set(INC_DIR ${CMAKE_ROOT_DIR}/3rd/bx/include/bx/compat/msvc)

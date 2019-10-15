@@ -21,14 +21,18 @@ set(EXAMPLE_LINK_LIBS
 	bgfx
 	bx
 	bimg
-	sfml-system
-	sfml-window
+	sfml-system-d
+	sfml-window-d
 	sxbCommon
 )
 if(OS_IS_IOS)
 	set(EXAMPLE_LINK_LIBS ${EXAMPLE_LINK_LIBS}
 		sfml-main
 	)
+endif()
+
+if(OS_IS_MACOS)
+	link_directories(${CMAKE_ROOT_DIR}/3rd/SFML/Solution/macOS/lib)
 endif()
 
 include_directories(${EXAMPLE_INC_DIR})

@@ -1,6 +1,6 @@
 
 set(SRC_INC_DIR 
-	${CMAKE_ROOT_DIR}/3rdparty
+	${CMAKE_ROOT_DIR}/3rd
 	${CMAKE_ROOT_DIR}/include
 )
 
