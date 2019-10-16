@@ -220,6 +220,21 @@ void ibl::update(const uint64_t & frame_)
             // left
             m_camera.orbit(-(float)m_touch[0].deltaX / 300.0, (float)m_touch[0].deltaY / 300.0);
         }
+        
+        if (m_cursor[sf::Mouse::Button::Middle].press)
+        {
+            // middle
+            m_settings.m_envRotDest += (float)m_cursor[sf::Mouse::Button::Middle].deltaX / 300.0;
+        }
+        else if (m_cursor[sf::Mouse::Button::Right].press)
+        {
+            // right
+            m_camera.dolly((float)m_cursor[sf::Mouse::Button::Right].deltaX / 300.0 + (float)m_cursor[sf::Mouse::Button::Right].deltaY / 300.0);
+        }
+        else if (m_cursor[sf::Mouse::Button::Left].press)
+        {
+            m_camera.orbit((float)m_cursor[sf::Mouse::Button::Left].deltaX / 300.0, (float)m_cursor[sf::Mouse::Button::Left].deltaY / 300.0);
+        }
 
         m_camera.update(deltaTimeSec);
         bx::memCopy(m_uniforms.m_cameraPos, &m_camera.m_pos.curr.x, 3*sizeof(float) );

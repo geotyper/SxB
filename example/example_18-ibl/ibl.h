@@ -2,6 +2,7 @@
 #ifndef IBL_H_426AA2232FB4B477BD71333A51418F16
 #define IBL_H_426AA2232FB4B477BD71333A51418F16
 
+#include <iostream>
 
 #include <stdint.h>  // int32_t
 
@@ -43,6 +44,8 @@ namespace stl = tinystl;
 #include <sxbCommon/defines.h>
 #include <sxbCommon/Mesh.h>
 #include <sxbCommon/utils.h>
+
+#include <SFML/Window/Event.hpp>
 
 #pragma mark -
 
@@ -412,6 +415,53 @@ public:
         }
     }
     
+    void mouseDown(const sf::Mouse::Button &type_, const int &x_, const int &y_)
+    {
+        if ( type_ < sf::Mouse::Button::ButtonCount )
+        {
+            m_cursor[type_].press = true;
+            m_cursor[type_].x = x_;
+            m_cursor[type_].y = y_;
+        }
+    }
+    
+    void mouseUp(const sf::Mouse::Button &type_, const int &x_, const int &y_)
+    {
+        if ( type_ < sf::Mouse::Button::ButtonCount )
+        {
+            m_cursor[type_].press = false;
+            m_cursor[type_].deltaX = 0;
+            m_cursor[type_].deltaY = 0;
+            m_cursor[type_].x = 0;
+            m_cursor[type_].y = 0;
+        }
+    }
+    
+    void mouseMove(const int &x_, const int &y_)
+    {
+        if (m_cursor[sf::Mouse::Button::Left].press)
+        {
+            m_cursor[sf::Mouse::Button::Left].deltaX = x_ - m_cursor[sf::Mouse::Button::Left].x;
+            m_cursor[sf::Mouse::Button::Left].deltaY = y_ - m_cursor[sf::Mouse::Button::Left].y;
+            m_cursor[sf::Mouse::Button::Left].x = x_;
+            m_cursor[sf::Mouse::Button::Left].y = y_;
+        }
+        else if (m_cursor[sf::Mouse::Button::Right].press)
+        {
+            m_cursor[sf::Mouse::Button::Right].deltaX = x_ - m_cursor[sf::Mouse::Button::Right].x;
+            m_cursor[sf::Mouse::Button::Right].deltaY = y_ - m_cursor[sf::Mouse::Button::Right].y;
+            m_cursor[sf::Mouse::Button::Right].x = x_;
+            m_cursor[sf::Mouse::Button::Right].y = y_;
+        }
+        else if (m_cursor[sf::Mouse::Button::Middle].press)
+        {
+            m_cursor[sf::Mouse::Button::Middle].deltaX = x_ - m_cursor[sf::Mouse::Button::Middle].x;
+            m_cursor[sf::Mouse::Button::Middle].deltaY = y_ - m_cursor[sf::Mouse::Button::Middle].y;
+            m_cursor[sf::Mouse::Button::Middle].x = x_;
+            m_cursor[sf::Mouse::Button::Middle].y = y_;
+        }
+    }
+    
 private:
 	bool m_ready;
 
@@ -421,6 +471,7 @@ private:
 	uint32_t m_reset;
     
     m2      m_touch[maxFinger];
+    m2      m_cursor[sf::Mouse::Button::ButtonCount];
 
     Uniforms m_uniforms;
     

@@ -34,6 +34,16 @@ int main(int argc, char *argv[])
                  exampleIBL.touchMove(event.touch.finger, event.touch.x, event.touch.y);
              else if (event.type == sf::Event::TouchEnded)
                  exampleIBL.touchEnd(event.touch.finger, event.touch.x, event.touch.y);
+             else if (event.type == sf::Event::MouseButtonPressed)
+             {
+                 exampleIBL.mouseDown(event.mouseButton.button, event.mouseButton.x, event.mouseButton.y);
+             }
+             else if (event.type == sf::Event::MouseButtonReleased)
+                 exampleIBL.mouseUp(event.mouseButton.button, event.mouseButton.x, event.mouseButton.y);
+             else if (event.type == sf::Event::MouseMoved)
+             {
+                 exampleIBL.mouseMove(event.mouseMove.x, event.mouseMove.y);
+             }
          }
 
 		 exampleIBL.update(count);
