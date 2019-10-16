@@ -4,6 +4,7 @@ set(EXAMPLE_INC_DIR
 	${CMAKE_ROOT_DIR}/3rd/bgfx/include
 	${CMAKE_ROOT_DIR}/3rd/bx/include
 	${CMAKE_ROOT_DIR}/3rd/bimg/include
+	${CMAKE_ROOT_DIR}/3rd/ozz-animation/include
 	${CMAKE_ROOT_DIR}/3rd
 	${CMAKE_ROOT_DIR}/include
 )
@@ -24,6 +25,9 @@ set(EXAMPLE_LINK_LIBS
 	sfml-system-d
 	sfml-window-d
 	sxbCommon
+	ozz_base_d
+	ozz_options_d
+	ozz_animation_d
 )
 if(OS_IS_IOS)
 	set(EXAMPLE_LINK_LIBS ${EXAMPLE_LINK_LIBS}
@@ -32,7 +36,10 @@ if(OS_IS_IOS)
 endif()
 
 if(OS_IS_MACOS)
-	link_directories(${CMAKE_ROOT_DIR}/3rd/SFML/Solution/macOS/lib)
+	set(EXAMPLE_LINK_DIR
+		${CMAKE_ROOT_DIR}/3rd/ozz-animation/lib/macos
+	)
+	link_directories(${EXAMPLE_LINK_DIR})
 endif()
 
 include_directories(${EXAMPLE_INC_DIR})
@@ -49,10 +56,12 @@ elseif(OS_IS_ANDROID)
 endif()
 
 	
+add_subdirectory("exampleOzz")
 #add_subdirectory("example_00-HelloBGFX")
 add_subdirectory("example_00-HelloWorld")
 #add_subdirectory("example_11-bob")
 #add_subdirectory("example_11-coc")
 #add_subdirectory("example_12-lod")
 #add_subdirectory("example_13-stencil")
+add_subdirectory("example_18-ibl")
 #add_subdirectory("example_33-pom")

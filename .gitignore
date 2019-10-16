@@ -10,6 +10,7 @@ pack
 ios.sh
 macos.sh
 windows.bat
+clean.sh
 
 *.pdb
 *.exp

@@ -1,4 +1,4 @@
-#if 0
+
 #ifndef MESH_H_717850E498228FA76EE08CEABF44B4A9
 #define MESH_H_717850E498228FA76EE08CEABF44B4A9
 
@@ -8,6 +8,8 @@
 namespace stl = tinystl;
 
 #include "sxbCommon/defines.h"
+
+#include <bgfx/3rdparty/meshoptimizer/src/meshoptimizer.h>
 
 SXB_NAMESPACE_BEGIN
 
@@ -337,24 +339,19 @@ typedef stl::vector<Primitive> PrimitiveArray;
 
 struct Group
 {
-	Group()
-	{
-		reset();
-	}
-
-	void reset()
-	{
-		m_vbh.idx = ::bgfx::kInvalidHandle;
-		m_ibh.idx = ::bgfx::kInvalidHandle;
-		m_prims.clear();
-	}
-
-	::bgfx::VertexBufferHandle m_vbh;
-	::bgfx::IndexBufferHandle m_ibh;
-	Sphere m_sphere;
-	Aabb m_aabb;
-	Obb m_obb;
-	PrimitiveArray m_prims;
+    Group();
+    void reset();
+    
+    bgfx::VertexBufferHandle m_vbh;
+    bgfx::IndexBufferHandle m_ibh;
+    uint16_t m_numVertices;
+    uint8_t* m_vertices;
+    uint32_t m_numIndices;
+    uint16_t* m_indices;
+    Sphere m_sphere;
+    Aabb m_aabb;
+    Obb m_obb;
+    PrimitiveArray m_prims;
 };
 
 
@@ -370,7 +367,7 @@ public:
 	bool load(
 		const void* _vertices,
 		uint32_t _numVertices,
-		const ::bgfx::VertexDecl& _decl,
+		const ::bgfx::VertexLayout& _decl,
 		const void* _indices,
 		uint32_t _numIndices
 	);
@@ -389,7 +386,7 @@ private:
 	bool loadImpl(bx::ReaderSeekerI* _reader);
 
 private:
-	::bgfx::VertexDecl m_decl;
+	::bgfx::VertexLayout m_decl;
 	typedef stl::vector<Group> GroupArray;
 	GroupArray m_groups;
 };
@@ -403,4 +400,3 @@ void meshStateDestroy(MeshState* _meshState);
 SXB_NAMESPACE_END
 
 #endif // MESH_H_717850E498228FA76EE08CEABF44B4A9
-#endif

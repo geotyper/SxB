@@ -25,19 +25,27 @@ else()
 		${SRCROOT}/utils_p.cpp
 	)
 endif()
-			
-set(ID_COMPRESS_SRCS 
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/indexbuffercompression.cpp
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/indexbuffercompression.h
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/indexbuffercompressionformat.h
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/indexbufferdecompression.cpp
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/indexbufferdecompression.h
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/indexcompressionconstants.h
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/readbitstream.h
-					${CMAKE_ROOT_DIR}/3rdparty/ib-compress/writebitstream.h
+		
+set(MESHOPT_DIR ${CMAKE_ROOT_DIR}/3rd/bgfx/3rdparty/meshoptimizer/src)
+set(MESHOPT_SRCS 
+	${MESHOPT_DIR}/allocator.cpp
+	${MESHOPT_DIR}/clusterizer.cpp
+	${MESHOPT_DIR}/indexcodec.cpp
+	${MESHOPT_DIR}/indexgenerator.cpp
+	${MESHOPT_DIR}/meshoptimizer.h
+	${MESHOPT_DIR}/overdrawanalyzer.cpp
+	${MESHOPT_DIR}/overdrawoptimizer.cpp
+	${MESHOPT_DIR}/simplifier.cpp
+	${MESHOPT_DIR}/spatialorder.cpp
+	${MESHOPT_DIR}/stripifier.cpp
+	${MESHOPT_DIR}/vcacheanalyzer.cpp
+	${MESHOPT_DIR}/vcacheoptimizer.cpp
+	${MESHOPT_DIR}/vertexcodec.cpp
+	${MESHOPT_DIR}/vfetchanalyzer.cpp
+	${MESHOPT_DIR}/vfetchoptimizer.cpp
 )
 			
-#source_group("ib-compress" FILES ${ID_COMPRESS_SRCS})	
+source_group("meshoptimizer" FILES ${MESHOPT_SRCS})	
 		
 IF (OS_IS_WINDOWS)
 	set(INC_DIR ${CMAKE_ROOT_DIR}/3rd/bx/include/bx/compat/msvc)
@@ -57,6 +65,5 @@ include_directories(${INC_DIR})
 add_lib(
 	${PROJECT_NAME} 
 	FOLDER "libs" 
-	SOURCES ${DIR_SRCS} 
-	#${ID_COMPRESS_SRCS}
+	SOURCES ${DIR_SRCS} ${MESHOPT_SRCS}
 )

@@ -1,18 +1,33 @@
-#if 0
+
 #include <bx/bx.h>
 #include <bx/file.h>
 #include <bx/sort.h>
 #include <bgfx/bgfx.h>
-#include <bgfx/dbg.h>
+#include <bgfx/examples/common/entry/dbg.h>
 #include <bx/readerwriter.h>
 #include <bx/filepath.h>
-#include <bx/bxstring.h>
-#include <ib-compress/indexbufferdecompression.h>
-#include <bgfx/vertexdecl.h>
+#include <bx/string.h>
+#include <bgfx/src/vertexdecl.h>
 #include "sxbCommon/utils.h"
 #include "sxbCommon/Mesh.h"
 
 SXB_NAMESPACE_BEGIN
+
+Group::Group()
+{
+    reset();
+}
+
+void Group::reset()
+{
+    m_vbh.idx = bgfx::kInvalidHandle;
+    m_ibh.idx = bgfx::kInvalidHandle;
+    m_numVertices = 0;
+    m_vertices = NULL;
+    m_numIndices = 0;
+    m_indices = NULL;
+    m_prims.clear();
+}
 
 bool Mesh::load(const char* _filePath)
 {
@@ -30,7 +45,7 @@ bool Mesh::load(const char* _filePath)
 bool Mesh::load(
 	const void* _vertices,
 	uint32_t _numVertices,
-	const ::bgfx::VertexDecl& _decl,
+	const ::bgfx::VertexLayout& _decl,
 	const void* _indices,
 	uint32_t _numIndices
 )
@@ -206,24 +221,28 @@ bool Mesh::loadImpl(bx::ReaderSeekerI* _reader)
 
 		case BGFX_CHUNK_MAGIC_IBC:
 		{
-			uint32_t numIndices;
-			bx::read(_reader, numIndices);
-
-			const ::bgfx::Memory* mem = ::bgfx::alloc(numIndices * 2);
-
-			uint32_t compressedSize;
-			bx::read(_reader, compressedSize);
-
-			void* compressedIndices = BX_ALLOC(allocator, compressedSize);
-
-			bx::read(_reader, compressedIndices, compressedSize);
-
-			ReadBitstream rbs((const uint8_t*)compressedIndices, compressedSize);
-			DecompressIndexBuffer((uint16_t*)mem->data, numIndices / 3, rbs);
-
-			BX_FREE(allocator, compressedIndices);
-
-			group.m_ibh = ::bgfx::createIndexBuffer(mem);
+            bx::read(_reader, group.m_numIndices);
+            
+            const bgfx::Memory* mem = bgfx::alloc(group.m_numIndices*2);
+            
+            uint32_t compressedSize;
+            bx::read(_reader, compressedSize);
+            
+            void* compressedIndices = BX_ALLOC(allocator, compressedSize);
+            
+            bx::read(_reader, compressedIndices, compressedSize);
+            
+            meshopt_decodeIndexBuffer(mem->data, group.m_numIndices, 2, (uint8_t*)compressedIndices, compressedSize);
+            
+            BX_FREE(allocator, compressedIndices);
+            
+//            if ( _ramcopy )
+            {
+                group.m_indices = (uint16_t*)BX_ALLOC(allocator, group.m_numIndices*2);
+                bx::memCopy(group.m_indices, mem->data, mem->size);
+            }
+            
+            group.m_ibh = bgfx::createIndexBuffer(mem);
 		}
 		break;
 
@@ -285,4 +304,3 @@ void meshStateDestroy(MeshState* _meshState)
 }
 
 SXB_NAMESPACE_END
-#endif
