@@ -1,5 +1,5 @@
 # SxB
-研究学习 [SFML](https://github.com/sfml/sfml) 与 [BGFX](https://github.com/bkaradzic/bgfx)
+Study [SFML](https://github.com/sfml/sfml) and [BGFX](https://github.com/bkaradzic/bgfx)
 
 |||||
 |-|-|-|-|
