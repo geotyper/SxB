@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.0.2)
 
 project(SxB)
-set(THE_PROJECT_PREFIX "SxB")
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
@@ -11,11 +10,14 @@ set(CMAKE_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 include(${CMAKE_ROOT_DIR}/BuildScript/cmake/Build.cmake)
 
+include(${CMAKE_ROOT_DIR}/cmake/sfml.cmake)
+include(${CMAKE_ROOT_DIR}/cmake/ozz-animation.cmake)
+
 # enable project folders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
 
-############3
+############
 
 macro(sfml_set_option var default type docstring)
     if(NOT DEFINED ${var})
@@ -24,7 +26,7 @@ macro(sfml_set_option var default type docstring)
     set(${var} ${${var}} CACHE ${type} ${docstring} FORCE)
 endmacro()
 
-if(${THE_PROJECT_PREFIX}_OS_MACOS)
+if(OS_IS_MACOS)
 	    sfml_set_option(SFML_BUILD_FRAMEWORKS FALSE BOOL "TRUE to build SFML as frameworks libraries (release only), FALSE to build according to BUILD_SHARED_LIBS")
 
     # add an option to let the user specify a custom directory for external frameworks installation
@@ -49,8 +51,6 @@ endif()
 add_subdirectory("3rd/bx")
 add_subdirectory("3rd/bimg")
 add_subdirectory("3rd/bgfx")
-#add_subdirectory("3rd/SFML")
-#add_subdirectory("3rd/ozz-animation")
 
 add_subdirectory("example")
 add_subdirectory("src")
