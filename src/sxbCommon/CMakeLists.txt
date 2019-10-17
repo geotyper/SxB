@@ -14,9 +14,14 @@ set(DIR_SRCS
 			${SRCROOT}/utils.cpp
 			${INCROOT}/Mesh.h
 			${SRCROOT}/Mesh.cpp
+			${INCROOT}/Camera.h
+			${SRCROOT}/Camera.cpp
+			${INCROOT}/DataStruct.h
+			${INCROOT}/Cursor.h
+			${SRCROOT}/Cursor.cpp
 )
 
-if(${THE_PROJECT_PREFIX}_OS_IOS)
+if(OS_IS_IOS)
 	set(DIR_SRCS ${DIR_SRCS}
 		${SRCROOT}/utils_p.mm
 	)
@@ -58,6 +63,7 @@ set(INC_DIR ${INC_DIR}
 	${CMAKE_ROOT_DIR}/3rd/bx/include
 	${CMAKE_ROOT_DIR}/3rd/bgfx/include
 	${CMAKE_ROOT_DIR}/3rd/bimg/include
+	${CMAKE_ROOT_DIR}/3rd/SFML/include
 )
 			
 include_directories(${INC_DIR})

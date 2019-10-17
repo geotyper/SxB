@@ -2,35 +2,7 @@
 #ifndef _OZZH_H_2F87C1877DE740CE73F81CFCF58F03A1_
 #define _OZZH_H_2F87C1877DE740CE73F81CFCF58F03A1_
 
-#include <ozz/animation/runtime/animation.h>
-#include <ozz/animation/runtime/local_to_model_job.h>
-#include <ozz/animation/runtime/sampling_job.h>
-#include <ozz/animation/runtime/skeleton.h>
-
-#include <ozz/base/log.h>
-
-#include <ozz/base/maths/box.h>
-#include <ozz/base/maths/simd_math.h>
-#include <ozz/base/maths/soa_transform.h>
-#include <ozz/base/maths/vec_float.h>
-
-#include <ozz/base/containers/vector.h>
-
-#include <ozz/options/options.h>
-
-#include <ozz/base/io/stream.h>
-#include <ozz/base/io/archive.h>
-#include <ozz/base/io/archive_traits.h>
-
-// Skeleton archive can be specified as an option.
-OZZ_OPTIONS_DECLARE_STRING(skeleton,
-                           "Path to the skeleton (ozz archive format).",
-                           "media/skeleton.ozz", false)
-
-// Animation archive can be specified as an option.
-OZZ_OPTIONS_DECLARE_STRING(animation,
-                           "Path to the animation (ozz archive format).",
-                           "media/animation.ozz", false)
+#include "dd.h"
 
 class ozzh
 {
@@ -39,8 +11,12 @@ public:
     ~ozzh(){}
     
 public:
-    bool Initialize();
-    bool Update(float dt);
+    bool init(void* nwh_);
+    bool update(const sxb::Cursor & cursor);
+    
+public:
+    bool _InitOzz();
+    bool _UpdateOzz(float dt);
     
 private:
     ozz::animation::Skeleton m_skeleton;
@@ -48,6 +24,41 @@ private:
     ozz::animation::SamplingCache m_cache;
     ozz::Vector<ozz::math::SoaTransform>::Std m_locals;
     ozz::Vector<ozz::math::Float4x4>::Std m_models;
+    
+private:
+    bool m_ready;
+    
+    uint32_t m_width;
+    uint32_t m_height;
+    uint32_t m_debug;
+    uint32_t m_reset;
+    
+    bgfx::TextureHandle m_tex;
+    bgfx::TextureHandle m_texIrr;
+    
+    bgfx::UniformHandle s_texCube;
+    bgfx::UniformHandle s_texCubeIrr;
+    
+    bgfx::UniformHandle m_texColor;
+    bgfx::TextureHandle m_fieldstoneTex;
+    
+    bgfx::ProgramHandle m_program;
+    bgfx::ProgramHandle m_program_cube;
+    bgfx::ProgramHandle m_program_TextureLighting;
+    bgfx::ProgramHandle m_programMesh;
+    
+    sxb::Mesh           m_orbMesh;
+    sxb::Mesh           m_bunnyMesh;
+    sxb::Mesh           m_columnMesh;
+    sxb::Mesh           m_floorMesh;
+    sxb::Mesh           m_coordMesh;
+    
+    sxb::Camera         m_camera;
+    
+    Uniforms            m_uniforms;
+    Settings            m_settings;
+    
+    sxb::MeshState      m_floorState;
 };
 
 #endif // _OZZH_H_2F87C1877DE740CE73F81CFCF58F03A1_
