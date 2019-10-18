@@ -35,7 +35,7 @@ bool Mesh::load(const char* _filePath)
 	bx::FileReaderI* reader = getFileReader();
 	if (bx::open(reader, _filePath))
 	{
-		Result = loadImpl(reader);
+		Result = loadImpl(reader, false);
 		bx::close(reader);
 	}
 
@@ -168,12 +168,13 @@ void Mesh::submit(bgfx::ViewId _id, bgfx::ProgramHandle _program, float* _mtx, c
     }
 }
 
-bool Mesh::loadImpl(bx::ReaderSeekerI* _reader)
+bool Mesh::loadImpl(bx::ReaderSeekerI* _reader, bool _ramcopy)
 {
 	bool Result = true;
 #define BGFX_CHUNK_MAGIC_VB  BX_MAKEFOURCC('V', 'B', ' ', 0x1)
+#define BGFX_CHUNK_MAGIC_VBC BX_MAKEFOURCC('V', 'B', 'C', 0x0)
 #define BGFX_CHUNK_MAGIC_IB  BX_MAKEFOURCC('I', 'B', ' ', 0x0)
-#define BGFX_CHUNK_MAGIC_IBC BX_MAKEFOURCC('I', 'B', 'C', 0x0)
+#define BGFX_CHUNK_MAGIC_IBC BX_MAKEFOURCC('I', 'B', 'C', 0x1)
 #define BGFX_CHUNK_MAGIC_PRI BX_MAKEFOURCC('P', 'R', 'I', 0x0)
 
 	using namespace bx;
@@ -188,105 +189,147 @@ bool Mesh::loadImpl(bx::ReaderSeekerI* _reader)
 	while (4 == bx::read(_reader, chunk, &err)
 		&& err.isOk())
 	{
-		switch (chunk)
-		{
-		case BGFX_CHUNK_MAGIC_VB:
-		{
-			read(_reader, group.m_sphere);
-			read(_reader, group.m_aabb);
-			read(_reader, group.m_obb);
-
-			read(_reader, m_decl);
-
-			uint16_t stride = m_decl.getStride();
-
-			uint16_t numVertices;
-			read(_reader, numVertices);
-			const ::bgfx::Memory* mem = ::bgfx::alloc(numVertices*stride);
-			read(_reader, mem->data, mem->size);
-
-			group.m_vbh = ::bgfx::createVertexBuffer(mem, m_decl);
-		}
-		break;
-
-		case BGFX_CHUNK_MAGIC_IB:
-		{
-			uint32_t numIndices;
-			read(_reader, numIndices);
-			const ::bgfx::Memory* mem = ::bgfx::alloc(numIndices * 2);
-			read(_reader, mem->data, mem->size);
-			group.m_ibh = ::bgfx::createIndexBuffer(mem);
-		}
-		break;
-
-		case BGFX_CHUNK_MAGIC_IBC:
-		{
-            bx::read(_reader, group.m_numIndices);
-            
-            const bgfx::Memory* mem = bgfx::alloc(group.m_numIndices*2);
-            
-            uint32_t compressedSize;
-            bx::read(_reader, compressedSize);
-            
-            void* compressedIndices = BX_ALLOC(allocator, compressedSize);
-            
-            bx::read(_reader, compressedIndices, compressedSize);
-            
-            meshopt_decodeIndexBuffer(mem->data, group.m_numIndices, 2, (uint8_t*)compressedIndices, compressedSize);
-            
-            BX_FREE(allocator, compressedIndices);
-            
-//            if ( _ramcopy )
+        switch (chunk)
+        {
+            case BGFX_CHUNK_MAGIC_VB:
             {
-                group.m_indices = (uint16_t*)BX_ALLOC(allocator, group.m_numIndices*2);
-                bx::memCopy(group.m_indices, mem->data, mem->size);
+                read(_reader, group.m_sphere);
+                read(_reader, group.m_aabb);
+                read(_reader, group.m_obb);
+                
+                read(_reader, m_layout);
+                
+                uint16_t stride = m_layout.getStride();
+                
+                read(_reader, group.m_numVertices);
+                const bgfx::Memory* mem = bgfx::alloc(group.m_numVertices*stride);
+                read(_reader, mem->data, mem->size);
+                if ( _ramcopy )
+                {
+                    group.m_vertices = (uint8_t*)BX_ALLOC(allocator, group.m_numVertices*stride);
+                    bx::memCopy(group.m_vertices, mem->data, mem->size);
+                }
+                group.m_vbh = bgfx::createVertexBuffer(mem, m_layout);
             }
-            
-            group.m_ibh = bgfx::createIndexBuffer(mem);
-		}
-		break;
-
-		case BGFX_CHUNK_MAGIC_PRI:
-		{
-			uint16_t len;
-			read(_reader, len);
-
-			stl::string material;
-			material.resize(len);
-			read(_reader, const_cast<char*>(material.c_str()), len);
-
-			uint16_t num;
-			read(_reader, num);
-
-			for (uint32_t ii = 0; ii < num; ++ii)
-			{
-				read(_reader, len);
-
-				stl::string name;
-				name.resize(len);
-				read(_reader, const_cast<char*>(name.c_str()), len);
-
-				Primitive prim;
-				read(_reader, prim.m_startIndex);
-				read(_reader, prim.m_numIndices);
-				read(_reader, prim.m_startVertex);
-				read(_reader, prim.m_numVertices);
-				read(_reader, prim.m_sphere);
-				read(_reader, prim.m_aabb);
-				read(_reader, prim.m_obb);
-
-				group.m_prims.push_back(prim);
-			}
-
-			m_groups.push_back(group);
-			group.reset();
-		}
-		break;
-
-		default:
-			DBG("%08x at %d", chunk, bx::skip(_reader, 0));
-			break;
-		}
+                break;
+                
+            case BGFX_CHUNK_MAGIC_VBC:
+            {
+                read(_reader, group.m_sphere);
+                read(_reader, group.m_aabb);
+                read(_reader, group.m_obb);
+                
+                read(_reader, m_layout);
+                
+                uint16_t stride = m_layout.getStride();
+                
+                read(_reader, group.m_numVertices);
+                
+                const bgfx::Memory* mem = bgfx::alloc(group.m_numVertices*stride);
+                
+                uint32_t compressedSize;
+                bx::read(_reader, compressedSize);
+                
+                void* compressedVertices = BX_ALLOC(allocator, compressedSize);
+                bx::read(_reader, compressedVertices, compressedSize);
+                
+                meshopt_decodeVertexBuffer(mem->data, group.m_numVertices, stride, (uint8_t*)compressedVertices, compressedSize);
+                
+                BX_FREE(allocator, compressedVertices);
+                
+                if ( _ramcopy )
+                {
+                    group.m_vertices = (uint8_t*)BX_ALLOC(allocator, group.m_numVertices*stride);
+                    bx::memCopy(group.m_vertices, mem->data, mem->size);
+                }
+                
+                group.m_vbh = bgfx::createVertexBuffer(mem, m_layout);
+            }
+                break;
+                
+            case BGFX_CHUNK_MAGIC_IB:
+            {
+                read(_reader, group.m_numIndices);
+                const bgfx::Memory* mem = bgfx::alloc(group.m_numIndices*2);
+                read(_reader, mem->data, mem->size);
+                if ( _ramcopy )
+                {
+                    group.m_indices = (uint16_t*)BX_ALLOC(allocator, group.m_numIndices*2);
+                    bx::memCopy(group.m_indices, mem->data, mem->size);
+                }
+                
+                group.m_ibh = bgfx::createIndexBuffer(mem);
+            }
+                break;
+                
+            case BGFX_CHUNK_MAGIC_IBC:
+            {
+                bx::read(_reader, group.m_numIndices);
+                
+                const bgfx::Memory* mem = bgfx::alloc(group.m_numIndices*2);
+                
+                uint32_t compressedSize;
+                bx::read(_reader, compressedSize);
+                
+                void* compressedIndices = BX_ALLOC(allocator, compressedSize);
+                
+                bx::read(_reader, compressedIndices, compressedSize);
+                
+                meshopt_decodeIndexBuffer(mem->data, group.m_numIndices, 2, (uint8_t*)compressedIndices, compressedSize);
+                
+                BX_FREE(allocator, compressedIndices);
+                
+                if ( _ramcopy )
+                {
+                    group.m_indices = (uint16_t*)BX_ALLOC(allocator, group.m_numIndices*2);
+                    bx::memCopy(group.m_indices, mem->data, mem->size);
+                }
+                
+                group.m_ibh = bgfx::createIndexBuffer(mem);
+            }
+                break;
+                
+            case BGFX_CHUNK_MAGIC_PRI:
+            {
+                uint16_t len;
+                read(_reader, len);
+                
+                stl::string material;
+                material.resize(len);
+                read(_reader, const_cast<char*>(material.c_str() ), len);
+                
+                uint16_t num;
+                read(_reader, num);
+                
+                for (uint32_t ii = 0; ii < num; ++ii)
+                {
+                    read(_reader, len);
+                    
+                    stl::string name;
+                    name.resize(len);
+                    read(_reader, const_cast<char*>(name.c_str() ), len);
+                    
+                    Primitive prim;
+                    read(_reader, prim.m_startIndex);
+                    read(_reader, prim.m_numIndices);
+                    read(_reader, prim.m_startVertex);
+                    read(_reader, prim.m_numVertices);
+                    read(_reader, prim.m_sphere);
+                    read(_reader, prim.m_aabb);
+                    read(_reader, prim.m_obb);
+                    
+                    group.m_prims.push_back(prim);
+                }
+                
+                m_groups.push_back(group);
+                group.reset();
+            }
+                break;
+                
+            default:
+                DBG("%08x at %d", chunk, bx::skip(_reader, 0) );
+                break;
+        }
 	}
 
 	return Result;

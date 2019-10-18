@@ -383,9 +383,10 @@ public:
     void submit(bgfx::ViewId _id, bgfx::ProgramHandle _program, float* _mtx, const RenderState& _renderState, bgfx::TextureHandle _texture, const bgfx::UniformHandle &_uniform, Uniforms &uxu_) const;
 
 private:
-	bool loadImpl(bx::ReaderSeekerI* _reader);
+	bool loadImpl(bx::ReaderSeekerI* _reader, bool _ramcopy);
 
 private:
+    bgfx::VertexLayout m_layout;
 	::bgfx::VertexLayout m_decl;
 	typedef stl::vector<Group> GroupArray;
 	GroupArray m_groups;
