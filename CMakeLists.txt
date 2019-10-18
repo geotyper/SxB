@@ -7,6 +7,7 @@ set(VERSION_MINOR 1)
 set(VERSION_PATCH 1)
 
 set(CMAKE_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}")
+set(CMAKE_THIRDLIB_ROOTDIR ${CMAKE_ROOT_DIR}/3rdlib)
 
 include(${CMAKE_ROOT_DIR}/BuildScript/cmake/Build.cmake)
 

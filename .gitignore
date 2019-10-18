@@ -6,6 +6,7 @@ Solution
 bin
 lib
 pack
+3rdlib
 
 ios.sh
 macos.sh

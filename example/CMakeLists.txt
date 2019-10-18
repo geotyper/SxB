@@ -1,49 +1,51 @@
 
-set(EXAMPLE_INC_DIR 
-	${CMAKE_ROOT_DIR}/3rd/SFML/include
-	${CMAKE_ROOT_DIR}/3rd/bgfx/include
-	${CMAKE_ROOT_DIR}/3rd/bx/include
-	${CMAKE_ROOT_DIR}/3rd/bimg/include
-	${CMAKE_ROOT_DIR}/3rd/ozz-animation/include
-	${CMAKE_ROOT_DIR}/3rd
-	${CMAKE_ROOT_DIR}/include
-)
-
 set(CMAKE_C_COMPILER g++)
 add_compile_options(-std=c++1y)
 
+set(INC_DIR 
+	${CMAKE_ROOT_DIR}/3rd/bgfx/include
+	${CMAKE_ROOT_DIR}/3rd/bx/include
+	${CMAKE_ROOT_DIR}/3rd/bimg/include
+	${CMAKE_ROOT_DIR}/3rd
+	${CMAKE_ROOT_DIR}/include
+	${CMAKE_THIRDLIB_ROOTDIR}/include
+)
+
+
 IF (OS_IS_WINDOWS)
-	set(EXAMPLE_INC_DIR ${EXAMPLE_INC_DIR} ${CMAKE_ROOT_DIR}/include/bx/compat/msvc)
+	set(INC_DIR ${INC_DIR} ${CMAKE_ROOT_DIR}/3rd/bx/include/compat/msvc)
 ELSEIF (OS_IS_MACOS)
-	set(EXAMPLE_INC_DIR ${EXAMPLE_INC_DIR} ${CMAKE_ROOT_DIR}/include/bx/compat/osx)
+	set(INC_DIR ${INC_DIR} ${CMAKE_ROOT_DIR}/3rd/bx/include/compat/osx)
 ENDIF()
 
-set(EXAMPLE_LINK_LIBS 
+include_directories(${INC_DIR})
+
+set(LINK_LIBS 
 	bgfx
 	bx
 	bimg
-	sfml-system-d
-	sfml-window-d
 	sxbCommon
-	ozz_base_d
-	ozz_options_d
-	ozz_animation_d
+	#ozz_base
+	#ozz_options
+	#ozz_animation
 )
+link_libraries(${LINK_LIBS})
+
 if(OS_IS_IOS)
 	set(EXAMPLE_LINK_LIBS ${EXAMPLE_LINK_LIBS}
 		sfml-main
 	)
 endif()
 
-if(OS_IS_MACOS)
-	set(EXAMPLE_LINK_DIR
-		${CMAKE_ROOT_DIR}/3rd/ozz-animation/lib/macos
-	)
-	link_directories(${EXAMPLE_LINK_DIR})
-endif()
+set(THIRD_LIBS
+	${CMAKE_THIRDLIB_ROOTDIR}/lib/libsfml-system-d.dylib
+	${CMAKE_THIRDLIB_ROOTDIR}/lib/libsfml-window-d.dylib
+	${CMAKE_THIRDLIB_ROOTDIR}/lib/libozz_base_d.a
+	${CMAKE_THIRDLIB_ROOTDIR}/lib/libozz_options_d.a
+	${CMAKE_THIRDLIB_ROOTDIR}/lib/libozz_animation_d.a
+)
 
-include_directories(${EXAMPLE_INC_DIR})
-link_libraries(${EXAMPLE_LINK_LIBS})
+link_libraries(${THIRD_LIBS})
 
 if(OS_IS_WINDOWS)
     link_libraries(winmm gdi32)
