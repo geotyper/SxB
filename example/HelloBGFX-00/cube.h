@@ -1,11 +1,8 @@
 
-#ifndef CUBE_H_2AA8FDAF22E7C21931959563A005530C
-#define CUBE_H_2AA8FDAF22E7C21931959563A005530C
+#ifndef _CUBE_H_2AA8FDAF22E7C21931959563A005530C
+#define _CUBE_H_2AA8FDAF22E7C21931959563A005530C
 
-#include <bgfx/bgfx.h>
-#include <bx/uint32_t.h>
-
-#include <sxbCommon/defines.h>
+#include <sxbCommon/Header.h>
 
 struct PosColorVertex
 {
@@ -71,4 +68,4 @@ private:
     double m_virtualMem;
 };
 
-#endif // CUBE_H_2AA8FDAF22E7C21931959563A005530C
+#endif // _CUBE_H_2AA8FDAF22E7C21931959563A005530C

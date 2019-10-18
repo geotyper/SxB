@@ -1,12 +1,4 @@
 
-#include <bgfx/platform.h>
-#include <bx/bx.h>
-#include <bx/math.h>
-
-#include <string>
-
-#include <sxbCommon/utils.h>
-
 #include "cube.h"
 
 bool Cube::init(void *nwh_)
@@ -17,17 +9,17 @@ bool Cube::init(void *nwh_)
     
     bgfx::Init bgfxInit;
     bgfxInit.type = bgfx::RendererType::Count; // Automatically choose a renderer.
-    bgfxInit.resolution.width = WNDW_WIDTH;
-    bgfxInit.resolution.height = WNDW_HEIGHT;
+    bgfxInit.resolution.width = SXB_DEFAULT_WIDTH;
+    bgfxInit.resolution.height = SXB_DEFAULT_HEIGHT;
     bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
     bgfx::init(bgfxInit);
     
     bgfx::setDebug(BGFX_DEBUG_TEXT);
     
     bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0f, 0);
-    bgfx::setViewRect(0, 0, 0, WNDW_WIDTH, WNDW_HEIGHT);
+    bgfx::setViewRect(0, 0, 0, SXB_DEFAULT_WIDTH, SXB_DEFAULT_HEIGHT);
     
-    bgfx::VertexDecl pcvDecl;
+    bgfx::VertexLayout pcvDecl;
     pcvDecl.begin()
     .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
     .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
@@ -60,7 +52,7 @@ void Cube::update(const uint64_t & frame_)
 		bx::mtxLookAt(view, eye, at);
 
 		float proj[16];
-		bx::mtxProj(proj, 60.0f, float(WNDW_WIDTH) / float(WNDW_HEIGHT), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+		bx::mtxProj(proj, 60.0f, float(SXB_DEFAULT_WIDTH) / float(SXB_DEFAULT_HEIGHT), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
 		bgfx::setViewTransform(0, view, proj);
 		bgfx::setVertexBuffer(0, m_vbh);
 		bgfx::setIndexBuffer(m_ibh);

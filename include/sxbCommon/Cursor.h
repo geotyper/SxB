@@ -8,8 +8,6 @@
 
 SXB_NAMESPACE_BEGIN
 
-#define SXB_MAX_FINGER  10
-
 struct Cursor
 {
     struct m2
@@ -21,10 +19,10 @@ struct Cursor
         int     deltaY { 0 };
     };
     
-    void handleEvent(sf::Event event);
+    void handleEvent(const sf::Event &event);
     void update();
 
-    m2      touch[SXB_MAX_FINGER];
+    m2      touch[SXB_DEFAULT_MAX_FINGER];
     m2      mouse[sf::Mouse::Button::ButtonCount];
     
     bool    mouse_moved{ false };

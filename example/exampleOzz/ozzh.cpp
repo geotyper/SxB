@@ -194,42 +194,15 @@ bool LoadAnimation(const char* _filename,
     return true;
 }
 
-
-bool ozzh::init(void* nwh_)
+void Entry::OnPreInit()
 {
-    m_ready = true;
-    m_width = 1366;
-    m_height = 768;
-    m_debug = BGFX_DEBUG_TEXT;
-    m_reset  = 0
-    | BGFX_RESET_VSYNC
-    | BGFX_RESET_MSAA_X16
-    ;
     
-    bgfx::PlatformData pd;
-    pd.nwh = nwh_;
-    bgfx::setPlatformData(pd);
-    
-    bgfx::Init bgfxInit;
-    bgfxInit.type = bgfx::RendererType::Count; // Automatically choose a renderer.
-    bgfxInit.resolution.width = m_width;
-    bgfxInit.resolution.height = m_height;
-    bgfxInit.resolution.reset = m_reset;
-    bgfx::init(bgfxInit);
-    
+}
+
+void Entry::OnInit()
+{
     _InitOzz();
-    
-    // Enable debug text.
-    bgfx::setDebug(m_debug);
-    
-    // Set views  clear state.
-    bgfx::setViewClear(0
-                       , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-                       , 0x303030ff
-                       , 1.0f
-                       , 0
-                       );
-    
+
     m_uniforms.init();
 
     m_tex = sxb::Utils::loadTexture("textures/bolonga_lod.dds", BGFX_SAMPLER_U_CLAMP|BGFX_SAMPLER_V_CLAMP|BGFX_SAMPLER_W_CLAMP);
@@ -279,137 +252,122 @@ bool ozzh::init(void* nwh_)
     m_floorState.m_textures[0].m_sampler = m_texColor;
     m_floorState.m_textures[0].m_stage = 0;
     m_floorState.m_textures[0].m_flags = UINT32_MAX;
-    
-    return m_ready;
 }
 
-bool ozzh::update(const sxb::Cursor & cursor)
+void Entry::OnUpdate()
 {
-    if (m_ready)
+    m_uniforms.m_glossiness   = m_settings.m_glossiness;
+    m_uniforms.m_reflectivity = m_settings.m_reflectivity;
+    m_uniforms.m_exposure     = m_settings.m_exposure;
+    m_uniforms.m_bgType       = m_settings.m_bgType;
+    m_uniforms.m_metalOrSpec   = float(m_settings.m_metalOrSpec);
+    m_uniforms.m_doDiffuse     = float(m_settings.m_doDiffuse);
+    m_uniforms.m_doSpecular    = float(m_settings.m_doSpecular);
+    m_uniforms.m_doDiffuseIbl  = float(m_settings.m_doDiffuseIbl);
+    m_uniforms.m_doSpecularIbl = float(m_settings.m_doSpecularIbl);
+    bx::memCopy(m_uniforms.m_rgbDiff,  m_settings.m_rgbDiff,  3*sizeof(float) );
+    bx::memCopy(m_uniforms.m_rgbSpec,  m_settings.m_rgbSpec,  3*sizeof(float) );
+    bx::memCopy(m_uniforms.m_lightDir, m_settings.m_lightDir, 3*sizeof(float) );
+    bx::memCopy(m_uniforms.m_lightCol, m_settings.m_lightCol, 3*sizeof(float) );
+    
+    float bunnyMtx[16];
+    bx::mtxSRT(bunnyMtx
+               , 1.0f
+               , 1.0f
+               , 1.0f
+               , 0.0f
+               , 1.56f
+               , 0.0f
+               , 0.0f
+               , 2.0f
+               , 0.0f
+               );
+    const float dist = 14.0f;
+    const float columnPositions[4][3] =
     {
-        m_uniforms.m_glossiness   = m_settings.m_glossiness;
-        m_uniforms.m_reflectivity = m_settings.m_reflectivity;
-        m_uniforms.m_exposure     = m_settings.m_exposure;
-        m_uniforms.m_bgType       = m_settings.m_bgType;
-        m_uniforms.m_metalOrSpec   = float(m_settings.m_metalOrSpec);
-        m_uniforms.m_doDiffuse     = float(m_settings.m_doDiffuse);
-        m_uniforms.m_doSpecular    = float(m_settings.m_doSpecular);
-        m_uniforms.m_doDiffuseIbl  = float(m_settings.m_doDiffuseIbl);
-        m_uniforms.m_doSpecularIbl = float(m_settings.m_doSpecularIbl);
-        bx::memCopy(m_uniforms.m_rgbDiff,  m_settings.m_rgbDiff,  3*sizeof(float) );
-        bx::memCopy(m_uniforms.m_rgbSpec,  m_settings.m_rgbSpec,  3*sizeof(float) );
-        bx::memCopy(m_uniforms.m_lightDir, m_settings.m_lightDir, 3*sizeof(float) );
-        bx::memCopy(m_uniforms.m_lightCol, m_settings.m_lightCol, 3*sizeof(float) );
-        
-        float bunnyMtx[16];
-        bx::mtxSRT(bunnyMtx
+        {  dist, 0.0f,  dist },
+        { -dist, 0.0f,  dist },
+        {  dist, 0.0f, -dist },
+        { -dist, 0.0f, -dist },
+    };
+    float columnMtx[4][16];
+    for (uint8_t ii = 0; ii < 4; ++ii)
+    {
+        bx::mtxSRT(columnMtx[ii]
                    , 1.0f
                    , 1.0f
                    , 1.0f
                    , 0.0f
-                   , 1.56f
                    , 0.0f
                    , 0.0f
-                   , 2.0f
-                   , 0.0f
+                   , columnPositions[ii][0]
+                   , columnPositions[ii][1]
+                   , columnPositions[ii][2]
                    );
-        const float dist = 14.0f;
-        const float columnPositions[4][3] =
-        {
-            {  dist, 0.0f,  dist },
-            { -dist, 0.0f,  dist },
-            {  dist, 0.0f, -dist },
-            { -dist, 0.0f, -dist },
-        };
-        float columnMtx[4][16];
-        for (uint8_t ii = 0; ii < 4; ++ii)
-        {
-            bx::mtxSRT(columnMtx[ii]
-                       , 1.0f
-                       , 1.0f
-                       , 1.0f
-                       , 0.0f
-                       , 0.0f
-                       , 0.0f
-                       , columnPositions[ii][0]
-                       , columnPositions[ii][1]
-                       , columnPositions[ii][2]
-                       );
-        }
-        float floorMtx[16];
-        bx::mtxSRT(floorMtx
-                   , 20.0f  //scaleX
-                   , 20.0f  //scaleY
-                   , 20.0f  //scaleZ
-                   , 0.0f   //rotX
-                   , 0.0f   //rotY
-                   , 0.0f   //rotZ
-                   , 0.0f   //translateX
-                   , 0.0f   //translateY
-                   , 0.0f   //translateZ
-                   );
-        
-        int64_t now = bx::getHPCounter();
-        
-        static int64_t last = now;
-        const int64_t frameTime = now - last;
-        last = now;
-        const double freq = double(bx::getHPFrequency() );
-        const float deltaTimeSec = float(double(frameTime)/freq);
-
-        _UpdateOzz(deltaTimeSec);
-        
-        m_camera.update(cursor, deltaTimeSec);
-        
-        const bgfx::Caps* caps = bgfx::getCaps();
-        
-        // View Transform 0.
-        float proj[16];
-        float view[16];
-        m_camera.mtxLookAt(view);
-        bx::mtxProj(proj, 45.0f, float(m_width)/float(m_height), 0.1f, 100.0f, caps->homogeneousDepth);
-        bgfx::setViewTransform(0, view, proj);
-        
-        // View rect.
-        bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
-
-        // Submit bunny.
-        float mtx[16];
-        bx::mtxSRT(mtx, 1.0f, 1.0f, 1.0f, 0.0f, bx::kPi, 0.0f, 0.0f, -0.80f, 0.0f);
-        bgfx::setTexture(0, s_texCube, m_tex);
-        bgfx::setTexture(1, s_texCubeIrr, m_texIrr);
-        m_uniforms.submit();
-
-        m_bunnyMesh.submit(0, m_programMesh, mtx, BGFX_STATE_MASK);
-        
-        for (uint8_t ii = 0; ii < 4; ++ii)
-        {
-            m_columnMesh.submit(0, m_program, columnMtx[ii], BGFX_STATE_DEFAULT);
-        }
-        
-        if ( !m_models.empty() )
-        {
-            int iii = 0;
-            for ( int i = 0; i < 4; ++i )
-            {
-                mtx[(4 * i) + 0] = m_models[iii].cols[i][0];
-                mtx[(4 * i) + 1] = m_models[iii].cols[i][1];
-                mtx[(4 * i) + 2] = m_models[iii].cols[i][2];
-                mtx[(4 * i) + 3] = m_models[iii].cols[i][3];
-            }
-        }
-        m_orbMesh.submit(0, m_programMesh, mtx, BGFX_STATE_MASK);
-        m_bunnyMesh.submit(0, m_program, bunnyMtx, BGFX_STATE_DEFAULT);
-        m_coordMesh.submit(0, m_program_cube, NULL, BGFX_STATE_DEFAULT | BGFX_STATE_PT_LINES);
-        
-        sxb::MeshState ss[1];
-        ss[0] = m_floorState;
-//        m_floorMesh.submit(ss, (uint8_t)1, floorMtx, 1);
-        bgfx::frame();
     }
+    float floorMtx[16];
+    bx::mtxSRT(floorMtx
+               , 20.0f  //scaleX
+               , 20.0f  //scaleY
+               , 20.0f  //scaleZ
+               , 0.0f   //rotX
+               , 0.0f   //rotY
+               , 0.0f   //rotZ
+               , 0.0f   //translateX
+               , 0.0f   //translateY
+               , 0.0f   //translateZ
+               );
+
+    _UpdateOzz(m_dt);
+    
+    const bgfx::Caps* caps = bgfx::getCaps();
+    
+    // View Transform 0.
+    float proj[16];
+    float view[16];
+    m_camera.mtxLookAt(view);
+    bx::mtxProj(proj, 45.0f, float(m_width)/float(m_height), 0.1f, 100.0f, caps->homogeneousDepth);
+    bgfx::setViewTransform(0, view, proj);
+    
+    // View rect.
+    bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
+    
+    // Submit bunny.
+    float mtx[16];
+    bx::mtxSRT(mtx, 1.0f, 1.0f, 1.0f, 0.0f, bx::kPi, 0.0f, 0.0f, -0.80f, 0.0f);
+    bgfx::setTexture(0, s_texCube, m_tex);
+    bgfx::setTexture(1, s_texCubeIrr, m_texIrr);
+    m_uniforms.submit();
+    
+    m_bunnyMesh.submit(0, m_programMesh, mtx, BGFX_STATE_MASK);
+    
+    for (uint8_t ii = 0; ii < 4; ++ii)
+    {
+        m_columnMesh.submit(0, m_program, columnMtx[ii], BGFX_STATE_DEFAULT);
+    }
+    
+    if ( !m_models.empty() )
+    {
+        int iii = 0;
+        for ( int i = 0; i < 4; ++i )
+        {
+            mtx[(4 * i) + 0] = m_models[iii].cols[i][0];
+            mtx[(4 * i) + 1] = m_models[iii].cols[i][1];
+            mtx[(4 * i) + 2] = m_models[iii].cols[i][2];
+            mtx[(4 * i) + 3] = m_models[iii].cols[i][3];
+        }
+    }
+    m_orbMesh.submit(0, m_programMesh, mtx, BGFX_STATE_MASK);
+    m_bunnyMesh.submit(0, m_program, bunnyMtx, BGFX_STATE_DEFAULT);
+    m_coordMesh.submit(0, m_program_cube, NULL, BGFX_STATE_DEFAULT | BGFX_STATE_PT_LINES);
+    
+    sxb::MeshState ss[1];
+    ss[0] = m_floorState;
+    //        m_floorMesh.submit(ss, (uint8_t)1, floorMtx, 1);
+
 }
 
-bool ozzh::_InitOzz()
+bool Entry::_InitOzz()
 {
     // Reading skeleton.
     if (!LoadSkeleton(OPTIONS_skeleton, &m_skeleton)) {
@@ -432,7 +390,7 @@ bool ozzh::_InitOzz()
     return true;
 }
 
-bool ozzh::_UpdateOzz(float dt)
+bool Entry::_UpdateOzz(float dt)
 {
     // Samples optimized animation at t = animation_time_.
     ozz::animation::SamplingJob sampling_job;
@@ -460,3 +418,5 @@ bool ozzh::_UpdateOzz(float dt)
     
     return true;
 }
+
+SXB_ENTRY_MAIN

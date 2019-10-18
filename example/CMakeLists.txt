@@ -25,9 +25,6 @@ set(LINK_LIBS
 	bx
 	bimg
 	sxbCommon
-	#ozz_base
-	#ozz_options
-	#ozz_animation
 )
 link_libraries(${LINK_LIBS})
 
@@ -59,8 +56,8 @@ endif()
 
 	
 add_subdirectory("exampleOzz")
-#add_subdirectory("example_00-HelloBGFX")
-add_subdirectory("example_00-HelloWorld")
+add_subdirectory("HelloWorld-00")
+add_subdirectory("HelloBGFX-00")
 #add_subdirectory("example_11-bob")
 #add_subdirectory("example_11-coc")
 #add_subdirectory("example_12-lod")

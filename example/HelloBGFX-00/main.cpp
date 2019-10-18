@@ -1,18 +1,10 @@
 
-#include <SFML/Config.hpp>
-#include <SFML/Window/WindowBase.hpp>
-#include <SFML/Window/Event.hpp>
-
 #include "cube.h"
-
-#if defined(SXB_SYSTEM_IOS)
-#include <SFML/Main.hpp>
-#endif
 
 int main(int argc, char *argv[])
  {
      // Create the main window
-     sf::WindowBase window(sf::VideoMode(WNDW_WIDTH, WNDW_HEIGHT), "SFML window");
+     sf::WindowBase window(sf::VideoMode(SXB_DEFAULT_WIDTH, SXB_DEFAULT_HEIGHT), "SFML window");
 
 	 Cube exampleCube;
 	 exampleCube.init(window.getWindowHandle());

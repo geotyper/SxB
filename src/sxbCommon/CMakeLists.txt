@@ -19,6 +19,9 @@ set(DIR_SRCS
 			${INCROOT}/DataStruct.h
 			${INCROOT}/Cursor.h
 			${SRCROOT}/Cursor.cpp
+			${INCROOT}/Header.h
+			${INCROOT}/IEntry.h
+			${SRCROOT}/IEntry.cpp
 )
 
 if(OS_IS_IOS)

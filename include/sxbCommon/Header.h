@@ -1,6 +1,6 @@
 
-#ifndef _HH_H_A1FCC1D896CEAC3BDD605DF8C8187CDC_
-#define _HH_H_A1FCC1D896CEAC3BDD605DF8C8187CDC_
+#ifndef _HEADER_H_9AB9569859BFF47B9D3B602871AEAE01_
+#define _HEADER_H_9AB9569859BFF47B9D3B602871AEAE01_
 
 #pragma mark SFML
 #include <SFML/Config.hpp>
@@ -67,10 +67,17 @@
 namespace stl = tinystl;
 
 #pragma mark sxbCommon
-#include <sxbCommon/utils.h>
-#include <sxbCommon/Mesh.h>
 #include <sxbCommon/Camera.h>
-#include <sxbCommon/DataStruct.h>
+#include <sxbCommon/Config.h>
 #include <sxbCommon/Cursor.h>
+#include <sxbCommon/DataStruct.h>
+#include <sxbCommon/IEntry.h>
+#include <sxbCommon/Mesh.h>
+#include <sxbCommon/utils.h>
 
-#endif // _HH_H_A1FCC1D896CEAC3BDD605DF8C8187CDC_
+#pragma mark post
+#if defined(SXB_SYSTEM_IOS)
+#include <SFML/Main.hpp>
+#endif
+
+#endif // _HEADER_H_9AB9569859BFF47B9D3B602871AEAE01_
