@@ -1,22 +1,13 @@
 
 #include "cube.h"
 
-bool Cube::init(void *nwh_)
+void Entry::OnPreInit()
 {
-    bgfx::PlatformData pd;
-    pd.nwh = nwh_;
-    bgfx::setPlatformData(pd);
-    
-    bgfx::Init bgfxInit;
-    bgfxInit.type = bgfx::RendererType::Count; // Automatically choose a renderer.
-    bgfxInit.resolution.width = SXB_DEFAULT_WIDTH;
-    bgfxInit.resolution.height = SXB_DEFAULT_HEIGHT;
-    bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
-    bgfx::init(bgfxInit);
-    
-    bgfx::setDebug(BGFX_DEBUG_TEXT);
-    
-    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0f, 0);
+    m_LookAtViewId.push_back(0);
+}
+
+void Entry::OnInit()
+{
     bgfx::setViewRect(0, 0, 0, SXB_DEFAULT_WIDTH, SXB_DEFAULT_HEIGHT);
     
     bgfx::VertexLayout pcvDecl;
@@ -28,40 +19,34 @@ bool Cube::init(void *nwh_)
     m_ibh = bgfx::createIndexBuffer(bgfx::makeRef(cubeTriList, sizeof(cubeTriList)));
     
     m_ready = sxb::Utils::loadProgram("vs_cubes.bin", "fs_cubes.bin", m_program);
-    
-
-    
-    return m_ready;
 }
 
-void Cube::update(const uint64_t & frame_)
+void Entry::OnUpdate()
 {
-	if (m_ready)
-	{
-		bgfx::touch(0);
-        sxb::Utils::getMem(m_residentMem, m_virtualMem);
-        
-        bgfx::dbgTextPrintf(0, 5, 0x0f, "                                    ");
-        bgfx::dbgTextPrintf(0, 7, 0x0f, "                                    ");
-        bgfx::dbgTextPrintf(0, 5, 0x0f, "%d", frame_);
-        bgfx::dbgTextPrintf(0, 7, 0x0f, "mem(resident,virtual): (%.3fm, %.3fm)", m_residentMem, m_virtualMem);
-
-		const bx::Vec3 at = { 0.0f, 0.0f,  0.0f };
-		const bx::Vec3 eye = { 0.0f, 0.0f, -5.0f };
-		float view[16];
-		bx::mtxLookAt(view, eye, at);
-
-		float proj[16];
-		bx::mtxProj(proj, 60.0f, float(SXB_DEFAULT_WIDTH) / float(SXB_DEFAULT_HEIGHT), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-		bgfx::setViewTransform(0, view, proj);
-		bgfx::setVertexBuffer(0, m_vbh);
-		bgfx::setIndexBuffer(m_ibh);
-
-		float mtx[16];
-		bx::mtxRotateXY(mtx, frame_ * 0.01f, frame_ * 0.01f);
-		bgfx::setTransform(mtx);
-
-		bgfx::submit(0, m_program);
-		bgfx::frame();
-	}
+    bgfx::touch(0);
+    sxb::Utils::getMem(m_residentMem, m_virtualMem);
+    
+    bgfx::dbgTextPrintf(0, 5, 0x0f, "                                    ");
+    bgfx::dbgTextPrintf(0, 7, 0x0f, "                                    ");
+    bgfx::dbgTextPrintf(0, 5, 0x0f, "%d", m_count);
+    bgfx::dbgTextPrintf(0, 7, 0x0f, "mem(resident,virtual): (%.3fm, %.3fm)", m_residentMem, m_virtualMem);
+    
+    bgfx::setVertexBuffer(0, m_vbh);
+    bgfx::setIndexBuffer(m_ibh);
+    
+    float mtx[16];
+    bx::mtxRotateXY(mtx, m_count * 0.01f, m_count * 0.01f);
+    bgfx::setTransform(mtx);
+    
+    bgfx::submit(0, m_program);
 }
+
+void Entry::OnEnd()
+{
+    bgfx::destroy(m_program);
+    
+    bgfx::destroy(m_vbh);
+    bgfx::destroy(m_ibh);
+}
+
+SXB_ENTRY_MAIN

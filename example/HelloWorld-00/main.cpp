@@ -5,8 +5,6 @@
 
 SXB_ENTRY_BEGIN
 
-int  m_count{ 0 };
-
 int     m_x;
 int     m_y;
 
@@ -17,7 +15,6 @@ SXB_ENTRY_END
 
 void Entry::OnPreInit()
 {
-    m_rgba = 0x443355FF;
 }
 
 void Entry::OnInit()
@@ -79,7 +76,11 @@ void Entry::OnUpdate()
                         , stats->textWidth
                         , stats->textHeight
                         );
-    m_count++;
+}
+
+void Entry::OnEnd()
+{
+    
 }
 
 SXB_ENTRY_MAIN

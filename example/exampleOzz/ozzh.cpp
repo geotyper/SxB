@@ -196,7 +196,8 @@ bool LoadAnimation(const char* _filename,
 
 void Entry::OnPreInit()
 {
-    
+    m_rgba = 0x303030ff;
+    m_LookAtViewId.push_back(0);
 }
 
 void Entry::OnInit()
@@ -320,18 +321,6 @@ void Entry::OnUpdate()
 
     _UpdateOzz(m_dt);
     
-    const bgfx::Caps* caps = bgfx::getCaps();
-    
-    // View Transform 0.
-    float proj[16];
-    float view[16];
-    m_camera.mtxLookAt(view);
-    bx::mtxProj(proj, 45.0f, float(m_width)/float(m_height), 0.1f, 100.0f, caps->homogeneousDepth);
-    bgfx::setViewTransform(0, view, proj);
-    
-    // View rect.
-    bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
-    
     // Submit bunny.
     float mtx[16];
     bx::mtxSRT(mtx, 1.0f, 1.0f, 1.0f, 0.0f, bx::kPi, 0.0f, 0.0f, -0.80f, 0.0f);
@@ -417,6 +406,11 @@ bool Entry::_UpdateOzz(float dt)
     }
     
     return true;
+}
+
+void Entry::OnEnd()
+{
+    
 }
 
 SXB_ENTRY_MAIN

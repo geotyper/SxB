@@ -39,22 +39,23 @@ IEntry::IEntry()
 
 IEntry::~IEntry()
 {
+    bgfx::shutdown();
     delete m_Window;
 }
 
 void IEntry::Run()
 {
     OnPreInit();
-    
+
     bgfx::setDebug(m_debug);
-    
+
     bgfx::setViewClear(0
                        , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
                        , m_rgba
                        , 1.0f
                        , 0
                        );
-    
+
     OnInit();
 
     while (m_Window->isOpen())
@@ -67,21 +68,33 @@ void IEntry::Run()
                m_Window->close();
             m_Cursor.handleEvent(event);
         }
-        
+        m_Cursor.update();
+
         int64_t now = bx::getHPCounter();
-        
+
         static int64_t last = now;
         const int64_t frameTime = now - last;
         last = now;
         const double freq = double(bx::getHPFrequency() );
         m_dt = float(double(frameTime)/freq);
-        
+
         m_camera.update(m_Cursor, m_dt);
-        
+
+        float proj[16], view[16];
+        m_camera.mtxLookAt(view);
+        bx::mtxProj(proj, 45.0f, float(m_width)/float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+        for ( auto & x: m_LookAtViewId )
+        {
+            bgfx::setViewTransform(x, view, proj);
+            bgfx::setViewRect(x, 0, 0, uint16_t(m_width), uint16_t(m_height) );
+        }
+
         OnUpdate();
         
         bgfx::frame();
+        m_count++;
     }
+    OnEnd();
 }
 
 SXB_NAMESPACE_END

@@ -95,7 +95,7 @@ void Camera::update(const Cursor & cursor, float _dt)
         // right
         dolly((float)cursor.touch[1].deltaX / 300.0 + (float)cursor.touch[1].deltaY / 300.0);
     }
-    else
+    else if (cursor.touch[0].press)
     {
         // left
         orbit(-(float)cursor.touch[0].deltaX / 300.0, (float)cursor.touch[0].deltaY / 300.0);
@@ -110,6 +110,8 @@ void Camera::update(const Cursor & cursor, float _dt)
     {
         orbit((float)cursor.mouse[sf::Mouse::Button::Left].deltaX / 300.0, (float)cursor.mouse[sf::Mouse::Button::Left].deltaY / 300.0);
     }
+    
+    dolly( cursor.wheelDelta / 100.0f );
     update(_dt);
 }
 

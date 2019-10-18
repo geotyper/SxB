@@ -40,32 +40,14 @@ static const uint16_t cubeTriList[] =
 	6, 3, 7,
 };
 
-class Cube
-{
-public:
-	Cube() : m_ready(false) {};
-	~Cube() 
-	{
-		bgfx::destroy(m_program);
+SXB_ENTRY_BEGIN
 
-		bgfx::destroy(m_vbh);
-		bgfx::destroy(m_ibh);
+bgfx::ProgramHandle         m_program;
+bgfx::VertexBufferHandle    m_vbh;
+bgfx::IndexBufferHandle     m_ibh;
+double                      m_residentMem;
+double                      m_virtualMem;
 
-		bgfx::shutdown();
-	};
-
-public:
-	bool init(void* nwh_);
-
-	void update(const uint64_t & frame_ = 0);
-
-private:
-	bool m_ready;
-	bgfx::ProgramHandle m_program;
-	bgfx::VertexBufferHandle m_vbh;
-	bgfx::IndexBufferHandle m_ibh;
-    double m_residentMem;
-    double m_virtualMem;
-};
+SXB_ENTRY_END
 
 #endif // _CUBE_H_2AA8FDAF22E7C21931959563A005530C

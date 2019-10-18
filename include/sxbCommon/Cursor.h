@@ -24,8 +24,10 @@ struct Cursor
 
     m2      touch[SXB_DEFAULT_MAX_FINGER];
     m2      mouse[sf::Mouse::Button::ButtonCount];
+    float   wheelDelta{ 0.0f };
     
     bool    mouse_moved{ false };
+    int     wheel_moved{ 0 };
 };
 
 SXB_NAMESPACE_END

@@ -66,10 +66,23 @@ void Cursor::handleEvent(const sf::Event &event)
             mouse[sf::Mouse::Button::Middle].y = event.mouseMove.y;
         }
     }
+    else if ( event.type == sf::Event::MouseWheelScrolled )
+    {
+        if ( event.mouseWheelScroll.delta != 0 )
+        {
+            wheelDelta = event.mouseWheelScroll.delta;
+        }
+        wheel_moved++;
+    }
 }
 
 void Cursor::update()
 {
+    wheel_moved--;
+    if ( wheel_moved < 0 )
+    {
+        wheel_moved = 0;
+    }
     if ( !mouse_moved )
     {
         if (mouse[sf::Mouse::Button::Left].press)
@@ -91,6 +104,11 @@ void Cursor::update()
     else
     {
         mouse_moved = false;
+    }
+    
+    if ( wheel_moved == 0 )
+    {
+        wheelDelta = 0;
     }
 }
 
