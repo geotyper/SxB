@@ -23,6 +23,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
 add_subdirectory("3rd/bx")
 add_subdirectory("3rd/bimg")
 add_subdirectory("3rd/bgfx")
+add_subdirectory("3rd/imgui")
 
 add_subdirectory("example")
 add_subdirectory("src")

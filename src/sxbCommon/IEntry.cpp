@@ -9,6 +9,9 @@
 
 #include <bx/timer.h>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+
 #include "sxbCommon/IEntry.h"
 
 SXB_NAMESPACE_BEGIN
@@ -46,7 +49,15 @@ IEntry::~IEntry()
 void IEntry::Run()
 {
     OnPreInit();
-
+    
+    IMGUI_CHECKVERSION();
+    ImGuiContext *ctx = ImGui::CreateContext();
+    ctx->IO.DisplaySize = ImVec2(m_width, m_height);
+    
+//    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    
+    ImGui::NewFrame();
+    
     bgfx::setDebug(m_debug);
 
     bgfx::setViewClear(0
@@ -95,6 +106,8 @@ void IEntry::Run()
         m_count++;
     }
     OnEnd();
+    
+    ImGui::DestroyContext();
 }
 
 SXB_NAMESPACE_END

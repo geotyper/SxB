@@ -26,3 +26,11 @@
 	path = 3rd/ozz-animation
 	url = https://github.com/guo122/ozz-animation
 	shallow = true
+[submodule "3rd/imgui"]
+	path = 3rd/imgui
+	url = https://github.com/guo122/imgui
+	shallow = true
+[submodule "3rd/PhysX"]
+	path = 3rd/PhysX
+	url = https://github.com/guo122/PhysX
+	shallow = true

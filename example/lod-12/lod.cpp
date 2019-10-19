@@ -51,6 +51,13 @@ void Entry::OnInit()
 
 void Entry::OnUpdate()
 {
+    bool show_demo_window = false;
+    ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+    
+    ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+    ImGui::Checkbox("Demo Window", &show_demo_window);
+    
+    
     static float distance = 2.0f;
     // Set view 0 default viewport.
     bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );

@@ -66,6 +66,10 @@
 #include <tinystl/string.h>
 namespace stl = tinystl;
 
+#pragma mark imgui
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+
 #pragma mark sxbCommon
 #include <sxbCommon/Camera.h>
 #include <sxbCommon/Config.h>

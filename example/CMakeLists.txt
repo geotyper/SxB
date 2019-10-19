@@ -25,6 +25,7 @@ set(LINK_LIBS
 	bx
 	bimg
 	sxbCommon
+	imgui
 )
 link_libraries(${LINK_LIBS})
 
