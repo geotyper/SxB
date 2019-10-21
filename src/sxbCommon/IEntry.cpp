@@ -74,7 +74,15 @@ void IEntry::Run()
         {
             // Close window: exit
             if (event.type == sf::Event::Closed)
-               m_Window->close();
+            {
+                m_Window->close();
+            }
+            else if (event.type == sf::Event::Resized)
+            {
+                m_width = event.size.width;
+                m_height = event.size.height;
+                bgfx::reset(m_width, m_height);
+            }
             m_Cursor.handleEvent(event);
         }
         m_Cursor.update();

@@ -197,7 +197,7 @@ bool LoadAnimation(const char* _filename,
 void Entry::OnPreInit()
 {
     m_rgba = 0x303030ff;
-    m_LookAtViewId.push_back(0);
+    m_OrbitCameraList.push_back(0);
 }
 
 void Entry::OnInit()
@@ -253,6 +253,31 @@ void Entry::OnInit()
     m_floorState.m_textures[0].m_sampler = m_texColor;
     m_floorState.m_textures[0].m_stage = 0;
     m_floorState.m_textures[0].m_flags = UINT32_MAX;
+}
+
+void Entry::OnGui()
+{
+    ImGui::SetNextWindowPos(
+                            ImVec2(10.0f, m_height - (m_height / 3.0f) - 10.0f)
+                            , ImGuiCond_FirstUseEver
+                            );
+    ImGui::SetNextWindowSize(
+                             ImVec2(m_width / 3.0f, m_height / 3.0f)
+                             , ImGuiCond_FirstUseEver
+                             );
+    ImGui::Begin("Setting");
+    
+    ImGui::SliderFloat3("Scale", &m_bunnyScale.x, 0, 20);
+    ImGui::SliderFloat3("Rotation", &m_bunnyRotation.x, 0, 20);
+    ImGui::SliderFloat3("Translate", &m_bunnyTranslate.x, -10, 10);
+    if ( ImGui::Button("Reset") )
+    {
+        m_bunnyScale.x = 1.0f, m_bunnyScale.y = 1.0f, m_bunnyScale.z = 1.0f;
+        m_bunnyRotation.x = 0.0f, m_bunnyRotation.y = bx::kPi, m_bunnyRotation.z = 0.0f;
+        m_bunnyTranslate.x = 0.0f, m_bunnyTranslate.y = -0.8f, m_bunnyTranslate.z = 0.0f;
+    }
+    
+    ImGui::End();
 }
 
 void Entry::OnUpdate()
@@ -323,7 +348,9 @@ void Entry::OnUpdate()
     
     // Submit bunny.
     float mtx[16];
-    bx::mtxSRT(mtx, 1.0f, 1.0f, 1.0f, 0.0f, bx::kPi, 0.0f, 0.0f, -0.80f, 0.0f);
+    bx::mtxSRT(mtx, m_bunnyScale.x, m_bunnyScale.y, m_bunnyScale.z,
+               m_bunnyRotation.x, m_bunnyRotation.y, m_bunnyRotation.z,
+               m_bunnyTranslate.x, m_bunnyTranslate.y, m_bunnyTranslate.z);
     bgfx::setTexture(0, s_texCube, m_tex);
     bgfx::setTexture(1, s_texCubeIrr, m_texIrr);
     m_uniforms.submit();

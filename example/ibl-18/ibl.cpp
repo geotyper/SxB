@@ -83,7 +83,7 @@ void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBott
 void Entry::OnPreInit()
 {
     m_rgba = 0x303030ff;
-    m_LookAtViewId.push_back(1);
+    m_OrbitCameraList.push_back(1);
 }
 
 void Entry::OnInit()
@@ -110,6 +110,11 @@ void Entry::OnInit()
     
     m_meshBunny.load("meshes/bunny.bin");
     m_meshOrb.load("meshes/orb.bin");
+}
+
+void Entry::OnGui()
+{
+    
 }
 
 void Entry::OnUpdate()

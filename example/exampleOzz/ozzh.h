@@ -158,6 +158,10 @@ Settings            m_settings;
 
 sxb::MeshState      m_floorState;
 
+bx::Vec3            m_bunnyScale{1.0f, 1.0f, 1.0f};
+bx::Vec3            m_bunnyRotation{0.0f, bx::kPi, 0.0f};
+bx::Vec3            m_bunnyTranslate{0.0f, -0.8f, 0.0f};
+
 SXB_ENTRY_END
 
 #endif // _OZZH_H_2F87C1877DE740CE73F81CFCF58F03A1_
