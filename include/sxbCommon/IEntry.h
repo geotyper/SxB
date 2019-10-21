@@ -22,6 +22,7 @@ public: \
 void OnPreInit(); \
 void OnInit(); \
 void OnUpdate(); \
+void OnGui(); \
 void OnEnd();
 
 #define SXB_ENTRY_END };
@@ -41,6 +42,7 @@ protected:
     virtual void OnInit() = 0;
     virtual void OnUpdate() = 0;
     virtual void OnEnd() = 0;
+    virtual void OnGui() = 0;
     
 protected:
     sf::WindowBase *    m_Window;
@@ -58,7 +60,7 @@ protected:
     int                 m_count;
     
     uint32_t                    m_rgba{ 0x443355FF };
-    std::vector<bgfx::ViewId>   m_LookAtViewId;
+    std::vector<bgfx::ViewId>   m_OrbitCameraList;
 };
 
 SXB_NAMESPACE_END

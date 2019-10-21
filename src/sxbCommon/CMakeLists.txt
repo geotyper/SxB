@@ -22,6 +22,8 @@ set(DIR_SRCS
 			${INCROOT}/Header.h
 			${INCROOT}/IEntry.h
 			${SRCROOT}/IEntry.cpp
+			${INCROOT}/imgui.h
+			${SRCROOT}/imgui.cpp
 )
 
 if(OS_IS_IOS)
@@ -54,6 +56,16 @@ set(MESHOPT_SRCS
 )
 			
 source_group("meshoptimizer" FILES ${MESHOPT_SRCS})	
+
+set(EMBEDDED_SHADER_DIR ${SRCROOT})
+set(EMBEDDED_SHADER
+	${EMBEDDED_SHADER_DIR}/fs_imgui_image.bin.h
+	${EMBEDDED_SHADER_DIR}/fs_ocornut_imgui.bin.h
+	${EMBEDDED_SHADER_DIR}/vs_imgui_image.bin.h
+	${EMBEDDED_SHADER_DIR}/vs_ocornut_imgui.bin.h
+)
+source_group("embedded_shader" FILES ${EMBEDDED_SHADER})
+
 		
 IF (OS_IS_WINDOWS)
 	set(INC_DIR ${CMAKE_ROOT_DIR}/3rd/bx/include/bx/compat/msvc)
@@ -74,5 +86,5 @@ include_directories(${INC_DIR})
 add_lib(
 	${PROJECT_NAME} 
 	FOLDER "libs" 
-	SOURCES ${DIR_SRCS} ${MESHOPT_SRCS}
+	SOURCES ${DIR_SRCS} ${MESHOPT_SRCS} ${EMBEDDED_SHADER}
 )

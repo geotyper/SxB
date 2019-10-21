@@ -32,12 +32,12 @@ bgfx::TextureHandle m_textureStipple;
 bgfx::TextureHandle m_textureLeafs;
 bgfx::TextureHandle m_textureBark;
 
-int32_t m_scrollArea;
-int32_t m_transitionFrame;
-int32_t m_currLod;
-int32_t m_targetLod;
-bool    m_transitions;
-float m_distance;
+int32_t             m_scrollArea;
+int32_t             m_transitionFrame;
+int32_t             m_currLod;
+int32_t             m_targetLod;
+bool                m_transitions;
+float               m_distance{ 2.0f };
 SXB_ENTRY_END
 
 #endif // LOD_H_DC8C8E2F5FF1CD11F91286184C879E21

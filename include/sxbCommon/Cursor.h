@@ -18,16 +18,20 @@ struct Cursor
         int     deltaX { 0 };
         int     deltaY { 0 };
     };
+    Cursor();
     
     void handleEvent(const sf::Event &event);
     void update();
 
     m2      touch[SXB_DEFAULT_MAX_FINGER];
-    m2      mouse[sf::Mouse::Button::ButtonCount];
+    bool    button_type[sf::Mouse::Button::ButtonCount];
+    m2      mouse;
     float   wheelDelta{ 0.0f };
     
     bool    mouse_moved{ false };
     int     wheel_moved{ 0 };
+    
+    bool    mouse_lock { false };
 };
 
 SXB_NAMESPACE_END

@@ -4,7 +4,7 @@
 void Entry::OnPreInit()
 {
     m_rgba = 0x303030ff;
-    m_LookAtViewId.push_back(0);
+//    m_OrbitCameraList.push_back(0);
 }
 
 void Entry::OnInit()
@@ -49,38 +49,44 @@ void Entry::OnInit()
 
 }
 
+void Entry::OnGui()
+{
+    ImGui::SetNextWindowPos(
+                            ImVec2(m_width - m_width / 5.0f - 10.0f, 10.0f)
+                            , ImGuiCond_FirstUseEver
+                            );
+    ImGui::SetNextWindowSize(
+                             ImVec2(m_width / 5.0f, m_height / 2.0f)
+                             , ImGuiCond_FirstUseEver
+                             );
+    
+    ImGui::Begin("Setting");
+    
+    ImGui::Checkbox("Transition", &m_transitions);
+    
+    ImGui::SliderFloat("Distance", &m_distance, 2.0f, 6.0f);
+    
+    ImGui::End();
+}
+
 void Entry::OnUpdate()
 {
-    bool show_demo_window = false;
-    ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
     
-    ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-    ImGui::Checkbox("Demo Window", &show_demo_window);
-    
-    
-    static float distance = 2.0f;
-    // Set view 0 default viewport.
-    bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
-    
-    // This dummy draw call is here to make sure that view 0 is cleared
-    // if no other draw calls are submitted to view 0.
     bgfx::touch(0);
     
     const bx::Vec3 at  = { 0.0f, 1.0f,      0.0f };
-    const bx::Vec3 eye = { 0.0f, 2.0f, -distance };
+    const bx::Vec3 eye = { 0.0f, 2.0f, -m_distance / 2.0f };
     
-    // Set view and projection matrix for view 0.
-//    {
-//        float view[16];
-//        bx::mtxLookAt(view, eye, at);
-//
-//        float proj[16];
-//        bx::mtxProj(proj, 60.0f, float(m_width)/float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-//        bgfx::setViewTransform(0, view, proj);
-//
-//        // Set view 0 default viewport.
-//        bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
-//    }
+    {
+        float view[16];
+        bx::mtxLookAt(view, eye, at);
+
+        float proj[16];
+        bx::mtxProj(proj, 60.0f, float(m_width)/float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+        bgfx::setViewTransform(0, view, proj);
+
+        bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
+    }
     
     float mtx[16];
     bx::mtxScale(mtx, 0.1f, 0.1f, 0.1f);

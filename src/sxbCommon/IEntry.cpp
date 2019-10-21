@@ -12,7 +12,11 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
+#include "sxbCommon/imgui.h"
+
 #include "sxbCommon/IEntry.h"
+
+#include <iostream>
 
 SXB_NAMESPACE_BEGIN
 
@@ -50,13 +54,7 @@ void IEntry::Run()
 {
     OnPreInit();
     
-    IMGUI_CHECKVERSION();
-    ImGuiContext *ctx = ImGui::CreateContext();
-    ctx->IO.DisplaySize = ImVec2(m_width, m_height);
-    
-//    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    
-    ImGui::NewFrame();
+    sxb::imguiCreate();
     
     bgfx::setDebug(m_debug);
 
@@ -80,6 +78,10 @@ void IEntry::Run()
             m_Cursor.handleEvent(event);
         }
         m_Cursor.update();
+        
+        sxb::imguiBeginFrame( m_Cursor, uint16_t(m_width), uint16_t(m_height) );
+        OnGui();
+        sxb::imguiEndFrame();
 
         int64_t now = bx::getHPCounter();
 
@@ -89,16 +91,23 @@ void IEntry::Run()
         const double freq = double(bx::getHPFrequency() );
         m_dt = float(double(frameTime)/freq);
 
-        m_camera.update(m_Cursor, m_dt);
+        const bool mouseOverGui = imgui::MouseOverArea();
+        if ( mouseOverGui && m_Cursor.mouse.press )
+        {
+            m_Cursor.mouse_lock = true;
+        }
+        
+        m_Cursor.mouse_lock ? m_camera.update(m_dt) : m_camera.update(m_Cursor, m_dt);
 
         float proj[16], view[16];
         m_camera.mtxLookAt(view);
         bx::mtxProj(proj, 45.0f, float(m_width)/float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-        for ( auto & x: m_LookAtViewId )
+        for ( auto & x: m_OrbitCameraList )
         {
             bgfx::setViewTransform(x, view, proj);
             bgfx::setViewRect(x, 0, 0, uint16_t(m_width), uint16_t(m_height) );
         }
+
 
         OnUpdate();
         
@@ -107,7 +116,7 @@ void IEntry::Run()
     }
     OnEnd();
     
-    ImGui::DestroyContext();
+    sxb::imguiDestroy();
 }
 
 SXB_NAMESPACE_END

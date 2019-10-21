@@ -78,6 +78,7 @@ namespace stl = tinystl;
 #include <sxbCommon/IEntry.h>
 #include <sxbCommon/Mesh.h>
 #include <sxbCommon/utils.h>
+#include <sxbCommon/imgui.h>
 
 #pragma mark post
 #if defined(SXB_SYSTEM_IOS)
