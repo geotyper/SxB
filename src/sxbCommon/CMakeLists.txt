@@ -88,3 +88,5 @@ add_lib(
 	FOLDER "libs" 
 	SOURCES ${DIR_SRCS} ${MESHOPT_SRCS} ${EMBEDDED_SHADER}
 )
+
+target_include_directories( ${PROJECT_NAME} PUBLIC ${CMAKE_ROOT_DIR}/include )
