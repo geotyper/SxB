@@ -133,6 +133,8 @@ ozz::animation::SamplingCache m_cache;
 ozz::Vector<ozz::math::SoaTransform>::Std m_locals;
 ozz::Vector<ozz::math::Float4x4>::Std m_models;
 
+sxb::PlaybackController m_playback;
+
 bgfx::TextureHandle m_tex;
 bgfx::TextureHandle m_texIrr;
 

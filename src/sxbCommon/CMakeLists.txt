@@ -24,6 +24,9 @@ set(DIR_SRCS
 			${SRCROOT}/IEntry.cpp
 			${INCROOT}/imgui.h
 			${SRCROOT}/imgui.cpp
+			${INCROOT}/PlaybackController.h
+			${SRCROOT}/PlaybackController.cpp
+
 )
 
 if(OS_IS_IOS)

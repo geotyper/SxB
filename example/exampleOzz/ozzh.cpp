@@ -403,6 +403,11 @@ bool Entry::_InitOzz()
     // Allocates a cache that matches animation requirements.
     m_cache.Resize(num_joints);
     
+    m_playback.SetDuration( m_animation.duration() );
+//    m_playback.SetLoop(true);
+//    m_playback.SetPlaybackSpeed(3.0f);
+    m_playback.Play();
+    
     return true;
 }
 
@@ -412,12 +417,9 @@ bool Entry::_UpdateOzz(float dt)
     ozz::animation::SamplingJob sampling_job;
     sampling_job.animation = &m_animation;
     sampling_job.cache = &m_cache;
-    static float last_ratio = 0;
-    float now_ratio = last_ratio + (dt / m_animation.duration());
-     now_ratio = now_ratio - floorf(now_ratio);
-    last_ratio = now_ratio;
+    m_playback.Update( dt );
     
-    sampling_job.ratio = now_ratio;
+    sampling_job.ratio = m_playback.GetTimeRatio();
     sampling_job.output = make_range(m_locals);
     if (!sampling_job.Run()) {
         return false;

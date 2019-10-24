@@ -77,6 +77,7 @@ namespace stl = tinystl;
 #include <sxbCommon/DataStruct.h>
 #include <sxbCommon/IEntry.h>
 #include <sxbCommon/Mesh.h>
+#include <sxbCommon/PlaybackController.h>
 #include <sxbCommon/utils.h>
 #include <sxbCommon/imgui.h>
 
