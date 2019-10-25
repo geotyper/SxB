@@ -276,6 +276,45 @@ void Entry::OnGui()
         m_bunnyRotation.x = 0.0f, m_bunnyRotation.y = bx::kPi, m_bunnyRotation.z = 0.0f;
         m_bunnyTranslate.x = 0.0f, m_bunnyTranslate.y = -0.8f, m_bunnyTranslate.z = 0.0f;
     }
+    ImGui::End();
+    
+    ImGui::SetNextWindowPos(
+                            ImVec2(m_width - (m_width / 3.0f) - 10.0f, m_height - (m_height / 3.0f) - 10.0f)
+                            , ImGuiCond_FirstUseEver
+                            );
+    ImGui::SetNextWindowSize(
+                             ImVec2(m_width / 3.0f, m_height / 3.0f)
+                             , ImGuiCond_FirstUseEver
+                             );
+    ImGui::Begin("PlaybackController");
+
+    float ratio = m_playback.GetTimeRatio();
+    ImGui::SliderFloat("Ratio", &ratio, 0, 1);
+    m_playback.SetTimeRatio(ratio);
+    
+    if ( ImGui::Button("Play") )
+    {
+        m_playback.Play();
+    }
+    ImGui::SameLine();
+    if ( ImGui::Button("Pause") )
+    {
+        m_playback.Pause();
+    }
+    ImGui::SameLine();
+    if ( ImGui::Button("Stop") )
+    {
+        m_playback.Stop();
+    }
+    ImGui::SameLine();
+    bool loop = m_playback.GetLoop();
+    ImGui::Checkbox("Loop", &loop);
+    m_playback.SetLoop(loop);
+    
+    float speed = m_playback.GetPlaybackSpeed();
+    ImGui::SliderFloat("Speed", &speed, -5, 5);
+    m_playback.SetPlaybackSpeed(speed);
+
     
     ImGui::End();
 }
@@ -383,6 +422,13 @@ void Entry::OnUpdate()
 
 }
 
+static int s_end_count = 0;
+void endOut()
+{
+    std::cout << "end: " << s_end_count << std::endl;
+    s_end_count++;
+}
+
 bool Entry::_InitOzz()
 {
     // Reading skeleton.
@@ -404,8 +450,9 @@ bool Entry::_InitOzz()
     m_cache.Resize(num_joints);
     
     m_playback.SetDuration( m_animation.duration() );
-//    m_playback.SetLoop(true);
-//    m_playback.SetPlaybackSpeed(3.0f);
+    m_playback.SetLoop( false );
+//    m_playback.SetPlaybackSpeed( 3.0f );
+    m_playback.SetEndCallback( endOut );
     m_playback.Play();
     
     return true;

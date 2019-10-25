@@ -9,12 +9,32 @@ SXB_NAMESPACE_BEGIN
 class PlaybackController
 {
 public:
+    void    SetTimeRatio( float time )
+    {
+        m_fPreviousTimeRatio = m_fTimeRatio = bx::clamp( time, 0.0f, 1.0f );
+        m_bEnded = false;
+    }
     float   GetTimeRatio() const { return m_fTimeRatio; }
     float   GetPreviousTimeRatio() const { return m_fPreviousTimeRatio; }
     
-    void    Play();
-    void    Pause();
-    void    Stop();
+    void    Play()
+    {
+        m_bPlay = true;
+        if ( m_bEnded )
+        {
+            SetTimeRatio( m_fPlaybackSpeed > 0 ? 0.0f : 1.0f );
+        }
+    }
+    void    Pause()
+    {
+        m_bPlay = false;
+    }
+    void    Stop()
+    {
+        SetTimeRatio( m_fPlaybackSpeed > 0 ? 0.0f : 1.0f );
+        m_bPlay = false;
+        m_bEnded = true;
+    }
     
     void    Update( float dt );
     void    Reset();
@@ -42,6 +62,7 @@ private:
     float   m_fDuration{ 0.0f };
     bool    m_bPlay{ false };
     bool    m_bLoop{ true };
+    bool    m_bEnded{ false };
     
     void    (*m_endCallback)(){ nullptr };
 };
