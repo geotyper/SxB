@@ -40,7 +40,7 @@ public:
     void    Reset();
     
 public:
-    void    SetEndCallback( void (*callback)() );
+    void    SetEndCallback( void (*callback)() ) { m_endCallback = callback; }
     
 public:
     void    SetPlaybackSpeed( float speed ) { m_fPlaybackSpeed = speed; }

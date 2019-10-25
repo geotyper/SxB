@@ -22,11 +22,9 @@ void PlaybackController::Reset()
     m_fPlaybackSpeed = 1.0f;
     m_fDuration = 0.0f;
     m_bPlay = false;
-}
-
-void PlaybackController::SetEndCallback( void (*callback)() )
-{
-    m_endCallback = callback;
+    m_bLoop = true;
+    m_bEnded = false;
+    m_endCallback = nullptr;
 }
 
 void PlaybackController::_SetTimeRatio( float time )

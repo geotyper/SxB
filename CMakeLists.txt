@@ -11,8 +11,8 @@ set(CMAKE_THIRDLIB_ROOTDIR ${CMAKE_ROOT_DIR}/3rdlib)
 
 include(${CMAKE_ROOT_DIR}/BuildScript/cmake/Build.cmake)
 
-include(${CMAKE_ROOT_DIR}/cmake/sfml.cmake)
-include(${CMAKE_ROOT_DIR}/cmake/ozz-animation.cmake)
+include(${CMAKE_ROOT_DIR}/script/sfml.cmake)
+include(${CMAKE_ROOT_DIR}/script/ozz-animation.cmake)
 
 # enable project folders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
