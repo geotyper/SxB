@@ -25,6 +25,11 @@ public:
             SetTimeRatio( m_fPlaybackSpeed > 0 ? 0.0f : 1.0f );
         }
     }
+    bool    IsPlaying()
+    {
+        return m_bPlay;
+    }
+    
     void    Pause()
     {
         m_bPlay = false;
@@ -34,6 +39,11 @@ public:
         SetTimeRatio( m_fPlaybackSpeed > 0 ? 0.0f : 1.0f );
         m_bPlay = false;
         m_bEnded = true;
+    }
+    
+    bool    IsStopped()
+    {
+        return m_bEnded;
     }
     
     void    Update( float dt );
